@@ -11,6 +11,9 @@ namespace SqsTest
     {
 
         private const string QUEUE_NAME = "test-batch";
+        private const int NUM_MESSAGES_TO_SEND = 100;
+        private const int MAX_THREADS = 20;
+
         private static SqsWrapper _sqsWrapper = new SqsWrapper();
 
 
@@ -18,7 +21,7 @@ namespace SqsTest
         {
 
             var cancellationToken = new CancellationTokenSource();
-            var subscriberTask = _sqsWrapper.Subscribe(QUEUE_NAME, m => ProcessMessage(m), 10, cancellationToken.Token);
+            var subscriberTask = _sqsWrapper.Subscribe(QUEUE_NAME, m => ProcessMessage(m), MAX_THREADS, cancellationToken.Token);
 
             ConsoleKeyInfo consoleKeyInfo = default(ConsoleKeyInfo);
             Console.WriteLine("Waiting for messages... Press 'S' to send a block, 'R' to Reset/Purge queue, ESC to finish...");
@@ -51,7 +54,7 @@ namespace SqsTest
             var queueUrl = sqs.GetQueueUrl(QUEUE_NAME).QueueUrl;
 
             Enumerable
-                .Range(0, 100)
+                .Range(0, NUM_MESSAGES_TO_SEND)
                 .Select(i => new PerformanceCalculationSpan { PackageNumber = i + 1, LastDate = DateTime.Today, FromAccount = (i * 10) + 1, ToAccount = (i + 1) * 10 })
                 .ToList()
                 .ForEach(p =>

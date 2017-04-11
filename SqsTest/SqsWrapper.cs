@@ -36,7 +36,7 @@ namespace SqsTest
         {
             _queueUrl = await GetQueueUrlAsync(queueName);
             _inflightMessages = 0;
-            var receiveRequest = new ReceiveMessageRequest { QueueUrl = _queueUrl,MaxNumberOfMessages = 10, WaitTimeSeconds = 20 };
+            var receiveRequest = new ReceiveMessageRequest { QueueUrl = _queueUrl, MaxNumberOfMessages = 10, WaitTimeSeconds = 20 };
             while (!cancellationToken.IsCancellationRequested)
             {
                 var response = await _sqs.ReceiveMessageAsync(receiveRequest);
