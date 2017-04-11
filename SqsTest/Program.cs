@@ -24,14 +24,11 @@ namespace SqsTest
             var subscriberTask = _sqsWrapper.Subscribe(QUEUE_NAME, m => ProcessMessage(m), MAX_THREADS, cancellationToken.Token);
 
             ConsoleKeyInfo consoleKeyInfo = default(ConsoleKeyInfo);
-            Console.WriteLine("Waiting for messages... Press 'S' to send a block, 'R' to Reset/Purge queue, ESC to finish...");
+            Console.WriteLine("Waiting for messages... Press 'S' to send a block, ESC to finish...");
             while (consoleKeyInfo.Key != ConsoleKey.Escape)
             {
                 if (consoleKeyInfo.KeyChar.ToString().ToUpper() == "S")
                     SendPackages();
-
-                if (consoleKeyInfo.KeyChar.ToString().ToUpper() == "R")
-                    ResetQueue();
 
                 consoleKeyInfo = Console.ReadKey();
             }
@@ -41,11 +38,6 @@ namespace SqsTest
             
             Thread.Sleep(2500);
             cancellationToken.Dispose();
-        }
-
-        static void ResetQueue()
-        {
-            _sqsWrapper.PurgeAndResetCounters();
         }
 
         static void SendPackages()
